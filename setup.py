@@ -109,7 +109,7 @@ class Setup():
                         'install_path' : self.install_path,
                         'notify' : {
                             'mode' : 2,
-                            'icon_path': '/tmp/cmus-osx-cover.jpg'
+                            'icon_path': '/tmp/cmus-osx-cover'
                             }
                         }
                 with open(CMUS_OSX_CONFIG, "w") as jfile:
