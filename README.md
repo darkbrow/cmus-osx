@@ -1,3 +1,5 @@
+__*This repository is forked from Amir Zamani's [cmus-osx](https://github.com/azadkuh/cmus-osx). Originaly he used eyeD3 for displaying album art. eyeD3 does not support m4a audio file type. So I changed some code of his work to display album art of m4a files. I replaced eyeD3 with mutagen package to support m4a as well as mp3.*__
+
 # cmus-osx
 
 `cmus-osx` is a tiny utility to mate `cmus`<sup>[note](#cmus-player)</sup> and
@@ -65,10 +67,10 @@ $> pip install -U pyobjc
 ```
 more info on [installing `pyobjc`](http://pythonhosted.org/pyobjc/install.html)
 
-- *optionally* [`eyeD3`](http://eyed3.nicfit.net/installation.html) for
+- *optionally* [`mutagen`](https://github.com/quodlibet/mutagen) for
 displaying the **album art** of the current songs.
 ```bash
-$> pip install eyeD3
+$> pip install mutagen
 ```
 
 ----
