@@ -3,9 +3,9 @@
 import sys
 import os
 import json
-import logging
-logging.basicConfig(filename='/tmp/cmus-notify.log', filemode='w',
-        level=logging.INFO)
+#import logging
+#logging.basicConfig(filename='/tmp/cmus-notify.log', filemode='w',
+#        level=logging.INFO)
 
 try:
     from Foundation import NSUserNotification
@@ -16,10 +16,12 @@ except ImportError as e:
     raise e
 
 try:
-    import eyed3
-    HAS_EYED3 = True
+    import mutagen.mp4
+    import mutagen.id3
+    import mutagen.flac
+    HAS_MUTAGEN = True
 except:
-    HAS_EYED3 = False
+    HAS_MUTAGEN = False
     pass
 
 CMUS_OSX_CONFIG = os.path.expanduser('~/.config/cmus/cmus-osx.json')
@@ -36,10 +38,9 @@ UPDATE_OPTIONS_FROM_CONFIG = True
 DISPLAY_MODE = 2
 
 # the icon file path for notification, or set as '' to disable icon displaying
-ALBUMART_PATH       = '/tmp/cmus-osx-cover.jpg'
+ALBUMART_PATH       = '/tmp/cmus-osx-cover'
 DEFAULT_LOCAL_ICON  = '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/Actions.icns'
 DEFAULT_STREAM_ICON = '/System/Library/CoreServices/CoreTypes.bundle/Contents/Resources/GenericNetworkIcon.icns'
-
 
 #------------------------------------------------------------------------------
 class CmusArguments:
@@ -119,16 +120,37 @@ class CmusArguments:
 
             return;
 
-        elif HAS_EYED3:
-            try:
-                faudio = eyed3.load(fpath)
-                if len(faudio.tag.images) > 0:
-                    with open(ALBUMART_PATH, 'w') as fpic:
-                        fpic.write(faudio.tag.images[0].image_data)
-                        self.cover = ALBUMART_PATH
-            except:
+        elif HAS_MUTAGEN:
+            fext = os.path.splitext(fpath)[1]
+            if 'm4a' in fext.lower():
+                try:
+                    faudio = mutagen.mp4.MP4(fpath)
+                    if len(faudio['covr'][0]) > 0:
+                        with open(ALBUMART_PATH, 'wb') as fpic:
+                            fpic.write(faudio['covr'][0])
+                            self.cover = ALBUMART_PATH
+                except:
+                    pass
+            elif 'mp3' in fext.lower():
+                try:
+                    faudio = mutagen.id3.ID3(fpath)
+                    if len(faudio.getall('APIC')[0].data) > 0:
+                        with open(ALBUMART_PATH, 'wb') as fpic:
+                            fpic.write(faudio.getall('APIC')[0].data)
+                            self.cover = ALBUMART_PATH
+                except:
+                    pass
+            elif 'flac' in fext.lower():
+                try:
+                    faudio = mutagen.flac.FLAC(fpath)
+                    if len(faudio.pictures[0].data) > 0:
+                        with open(ALBUMART_PATH, 'wb') as fpic:
+                            fpic.write(faudio.pictures[0].data)
+                            self.cover = ALBUMART_PATH
+                except:
+                    pass
+            else:
                 pass
-
 
 #------------------------------------------------------------------------------
 class Notification:
