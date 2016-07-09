@@ -59,16 +59,17 @@ class Setup():
 
         print("  verified: `pyobjc` has been found.")
 
-        #check for eyeD3
+        #check for mutagen
         try:
-            import eyed3
-            print("  verified: eyeD3")
+            import mutagen.mp4
+            import mutagen.id3
+            import mutagen.flac
+            print("  verified: mutagen")
         except:
             print("info: if you want to see albmum art thumbnail in"
-                " notification center, please install `eyeD3` by `pip` or see the"
+                " notification center, please install `mutagen` by `pip` or see the"
                 " README.md for more information.");
             pass
-
 
     def __copy_files(self):
         if not os.path.exists(self.install_path):
